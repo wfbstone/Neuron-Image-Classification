@@ -13,13 +13,13 @@ Here Red indicates "Treated" and Blue indicates "Untreated". Regions are coloure
 ## Installation
 
 To clone this repository run:
+
 ```
 git clone https://github.com/wfbstone/Neuron-Image-Classification.git
-cd DeepLearningFlappyBird
+cd Neuron-Image-Classification
 ```
 
 To install the requirements, run:
-
 ```
 pip install -r requirements.txt
 ```
