@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is on the classification of Neuron images produced by the Psychiatry Department of the University of Oxford. The classification task is to learn to distinguish whether Neurons have been treated with the compound [Amyloid- &beta;](https://en.wikipedia.org/wiki/Amyloid_beta "Wikipedia article"). The images used are taken after staining with the [Cy5 dye](https://en.wikipedia.org/wiki/Cyanine "Wikipedia article"), a biomarker for the [MAP2 gene](https://en.wikipedia.org/wiki/Microtubule-associated_protein_2 "Wikipedia article") found in the Neuronal Cytoskeleton. 
+This project is on the classification of Neuron images produced by the Psychiatry Department of the University of Oxford. The classification task is to learn to distinguish whether Neurons have been treated with the compound [Amyloid-&beta;](https://en.wikipedia.org/wiki/Amyloid_beta "Wikipedia article"). The images used are taken after staining with the [Cy5 dye](https://en.wikipedia.org/wiki/Cyanine "Wikipedia article"), a biomarker for the [MAP2 gene](https://en.wikipedia.org/wiki/Microtubule-associated_protein_2 "Wikipedia article") found in the Neuronal Cytoskeleton. 
 
 Amyloid-&beta; is thought to induce synapse loss. Verifying that this is the case and having a robust classifier will allow researchers to test different compounds for their abilities to reduce the effects of treatment with Amyloid-&beta;
 
@@ -38,14 +38,11 @@ To verify that this performance isn't due to random artifacts in the data, both 
 
 For visualising the effects of treatment with Amyloid-&beta; neither Grad-CAM nor the Saliency Map are particularly insightful. Grad-CAM is great for highlighting regions of interest but tends to highlight the entire network of Neurons and the Saliency Map is great at highlighting individual Nuclei and Neurites. 
 
-To produce an effect mapping, the Sliding Windows algorithm is implemented convolutionally as mentioned in the [OverFeat paper](https://arxiv.org/abs/1312.6229 "Paper on arxiv"). The Pooling layers within the VGG19 mean that this technique doesn't give as fine-grained an output as the full Sliding-Windows algorithm but given the fast run time it works fine. This technique is better at distinguishing which regions look more "Treated" or "Untreated" but not the individual Neurons. 
+<a name="thresholds"> Using the Sliding Windows algorithm, the model can be used to classify regions of the image separately. This technique performs well distinguishing which areas look more "Treated" or "Untreated" but the map produced isn’t fine-grained enough to be of use showing which Neurons show the characteristics of having been treated. The Saliency Map on the other hand, is excellent at distinguishing which Neurons are most important towards the overall classification of the image thus a combination of these two techniques produces a useful visualisation of which Neurons are indicative of treatment with A&beta;. </a>
 
-Combining this technique with the Saliency Map the produces a very useful visualisation of the effect of treatment with Amyloid-&beta;. Colouring the Saliency Map depending on which class the Sliding Windows algorithm deemed that region to be allows the visualisation of which Neurites appear to look treated by the compound and which don't. 
+The combination of these two techniques was achieved by colouring the Saliency Map depending on what classification the corresponding region received by the Sliding Windows algorithm. Using [Youden's J Statistic](https://onlinelibrary.wiley.com/doi/epdf/10.1002/1097-0142%281950%293%3A1%3C32%3A%3AAID-CNCR2820030106%3E3.0.CO%3B2-3) to determine where to set the thresholds for confidence, the Saliency Map is coloured Red or Blue if the region is confidently predicted as “Treated” or “Untreated” and Green if the prediction was uncertain.
 
-<a name="thresholds">This map also includes the option of "Unsure" and to include this, [Youden's J Statistic](https://en.wikipedia.org/wiki/Youden%27s_J_statistic "Wikipedia article") is computed from the [ROC Curve](https://en.wikipedia.org/wiki/Receiver_operating_characteristic "Wikipedia article") and the optimal threshold is the one which maximises the J Statistic.</a>
 
 ## Extensions
 
-* Improve robustness of sliding windows classification to reduce number of contradictory results. e.g.
-![Example of contradictory result](https://github.com/wfbstone/Neuron-Image-Classification/blob/master/PNG/Coloured%20Saliency%20Map%20-%20Contradictory.png)
-* Experiment with pooling and padding the outputted sliding windows map: this map doesn't directly correlate with which regions should be classified as what (there is overlap etc.)
+* Experiment with convolutional implementation of the Sliding Windows algorithm as mentioned in the [OverFeat paper](https://arxiv.org/abs/1312.6229 "Paper on arxiv") in attempt to reduce computation time.
